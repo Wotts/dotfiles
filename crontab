@@ -1,0 +1,1 @@
+*/20 * * * *  XDG_RUNTIME_DIR=/run/user/$(id -u) notify-send "It's been 20 minutes" "What's that outside?"

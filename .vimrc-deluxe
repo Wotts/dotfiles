@@ -1,0 +1,203 @@
+" VIMrc Wotts
+
+" -----General Settings-----
+" Colour
+syntax on
+colorscheme srcery
+hi MatchParen cterm=bold ctermfg=black ctermbg=white
+
+" Whitespace
+highlight ExtraWhitespace ctermbg=darkgrey
+match ExtraWhitespace /\s\s\+$/
+
+" Behaviour
+filetype plugin indent on
+
+" Set window title
+set title
+
+" Set status line display
+set statusline=%F%m%r%h%w\ [FORMAT=%{&ff}]\ [TYPE=%Y]\ [POS=%l,%v][%p%%]\ [BUFFER=%n]\ %{strftime('%c')}
+
+" Fixes common backspace problems
+set backspace=indent,eol,start
+
+" Speed up scrolling in Vim
+set ttyfast
+
+" Use mouse in Insert mode
+set mouse=i
+
+" Show last status
+set laststatus=2
+
+" Tab settings
+set softtabstop=4
+set shiftwidth=4
+set expandtab
+
+" Show line-numbers
+set number
+
+" Enable incremental search
+set incsearch
+
+" Highlight matching search patterns
+set hlsearch
+set ignorecase
+set smartcase
+
+" Display 5 lines above/below the cursor when scrolling
+set scrolloff=5
+
+" Jump 10 lines at a time
+noremap <C-d> 10<C-d>
+noremap <C-u> 10<C-u>
+
+" Cursor underline
+set cursorline
+
+" Split new file to the right
+set splitright
+
+" Show commands
+set showcmd
+
+" Dont show mode, Airline does this for us
+set noshowmode
+
+" Use wildmenu
+set wildmenu
+set wildmode=longest:full
+
+" Filetypes
+autocmd BufNewFile,BufRead *.tt2 set filetype=html
+autocmd BufNewFile,BufRead *.t set filetype=perl
+autocmd BufNewFile,BufRead *.ns set filetype=perl
+
+
+" -----Plugins------
+"
+"Plugin autoinstalling
+if empty(glob('~/.vim/autoload/plug.vim'))
+  silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
+        \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+  autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+endif
+
+call plug#begin('~/.vim/plugged')
+
+"Syntax highlighting and autocompletion
+"Plug 'neoclide/coc.nvim' , { 'branch' : 'release' }
+Plug 'airblade/vim-gitgutter'
+Plug 'sheerun/vim-polyglot'
+Plug 'pangloss/vim-javascript'
+Plug 'jiangmiao/auto-pairs'
+Plug 'alvan/vim-closetag'
+Plug 'https://github.com/ap/vim-css-color'
+
+"File search and navigation
+Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+Plug 'junegunn/fzf.vim'
+Plug 'preservim/nerdtree'
+
+"Editor interface and theming
+Plug 'tpope/vim-fugitive'
+Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
+Plug 'wfxr/minimap.vim'
+Plug 'ryanoasis/vim-devicons'
+Plug 'yggdroot/indentline'
+Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
+
+"Debugging, refactoring and version control
+"Plug 'puremourning/vimspector'
+
+call plug#end()
+
+" -----Plugin Variables-----
+"
+let g:airline_powerline_fonts = 1
+let g:airline_theme='airlinewotts'
+
+" Requires vim-fugitive
+let g:airline#extensions#branch#enabled = 1
+let g:airline#extensions#branch#format = 1
+let g:airline#extensions#hunks#enabled = 1
+if !exists('g:airline_symbols')
+    let g:airline_symbols = {}
+endif
+let g:airline_symbols.branch = '⎇ '
+
+let g:minimap_width = 15
+let g:minimap_auto_start = 1
+let g:minimap_auto_start_win_enter = 1
+let g:minimap_auto_start_win_enter = 0
+
+let NERDTreeWinSize=36
+let NERDTreeShowHidden=1
+let NERDTreeMapOpenInTab='<ENTER>'
+let NERDTreeNodeDelimiter = "\t"
+
+autocmd VimEnter * NERDTree | wincmd p
+" Exit Vim if NERDTree is the only window remaining in the only tab.
+autocmd BufEnter * if tabpagenr('$') == 1 && winnr('$') == 1 && exists('b:NERDTree') && b:NERDTree.isTabTree() | quit | endif
+
+colorscheme srcery
+set bg=dark
+
+" Customize fzf colors to match your color scheme
+let g:fzf_colors =
+\ { 'fg':      ['fg', 'Normal'],
+  \ 'bg':      ['bg', 'Normal'],
+  \ 'hl':      ['fg', 'Comment'],
+  \ 'fg+':     ['fg', 'CursorLine', 'CursorColumn', 'Normal'],
+  \ 'bg+':     ['bg', 'CursorLine', 'CursorColumn'],
+  \ 'hl+':     ['fg', 'Statement'],
+  \ 'info':    ['fg', 'PreProc'],
+  \ 'border':  ['fg', 'Normal'],
+  \ 'prompt':  ['fg', 'Comment'],
+  \ 'pointer': ['fg', 'Exception'],
+  \ 'marker':  ['fg', 'Keyword'],
+  \ 'spinner': ['fg', 'Label'],
+  \ 'header':  ['fg', 'Comment'] }
+
+
+" -----Keybindings-----
+" Use H/L to switch tabs
+nnoremap H gT
+nnoremap L gt
+
+" Remove all trailing whitespace by pressing F6
+nnoremap <F6> :let _s=@/<Bar>:%s/\s\+$//e<Bar>:let @/=_s<Bar><CR>
+
+" Toggle pastemode
+set pastetoggle=<F8>
+
+" Remove highlights
+nnoremap <silent> <BS> :nohlsearch<CR>
+
+" JSON format
+nnoremap <F7> :%!python3 -m json.tool<CR>
+vmap J !jq<CR>
+
+" Sorting
+vmap S !sort<CR>
+
+" Ctrl-N for word, Ctrl-L for line-completion
+inoremap <C-N> <C-X><C-N>
+inoremap <C-L> <C-X><C-L>
+
+" Open and close NERDTree
+map <C-x> :NERDTreeToggle<CR>
+
+" fzf and ripgrep searching
+let mapleader = ","
+noremap <leader>fs :Files<cr>
+noremap <leader>rg :Rg<cr>
+
+" Conquer of Completion
+"nmap <silent> gd <Plug>(coc-definition)
+"nmap <silent> gy <Plug>(coc-type-definition)
+"nmap <silent> gi <Plug>(coc-implementation)
+"nmap <silent> gr <Plug>(coc-references)

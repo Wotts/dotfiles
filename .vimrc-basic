@@ -1,0 +1,78 @@
+" VIMrc Wotts
+
+"Colour
+syntax on
+colorscheme srcery
+hi MatchParen cterm=bold ctermfg=black ctermbg=white
+"Whitespace
+highlight ExtraWhitespace ctermbg=darkgrey
+match ExtraWhitespace /\s\s\+$/
+
+
+"Behaviour
+filetype plugin indent on
+set ls=2
+set title
+set mouse=i
+set scrolloff=5
+set softtabstop=4
+set shiftwidth=4
+set expandtab
+set incsearch
+set hlsearch
+set number
+"set relativenumber
+set ignorecase
+set smartcase
+noremap <C-d> 10<C-d>
+noremap <C-u> 10<C-u>
+set cursorline
+:hi CursorLine ctermbg=236
+set splitright
+set showcmd
+set wildmenu
+set wildmode=longest:full
+set noshowmode "Airline does this for us
+
+
+"Keybindings
+"Remove all trailing whitespace by pressing F6
+nnoremap <F6> :let _s=@/<Bar>:%s/\s\+$//e<Bar>:let @/=_s<Bar><CR>
+nnoremap <F7> :%!python3 -m json.tool<CR>
+nnoremap <silent> <BS> :nohlsearch<CR>
+nnoremap H gT
+nnoremap L gt
+vmap J !jq<CR>
+vmap S !sort<CR>
+set pastetoggle=<F8>
+"Open and close NERDTree
+map <C-x> :NERDTreeToggle<CR>
+"Ctrl-N for word, Ctrl-L for line-completion
+inoremap <C-N> <C-X><C-N>
+inoremap <C-L> <C-X><C-L>
+
+
+"Plugins
+"Pathogen for vim-airline and vim-gitgutter
+execute pathogen#infect()
+execute pathogen#helptags()
+
+" Airline customizations
+let g:airline_powerline_fonts = 1
+let g:airline#extensions#tabline#enabled = 1
+let g:airline#extensions#tabline#tabs_label = 'tabs'
+let g:airline#extensions#tabline#formatter = 'default'
+let g:airline#extensions#branch#format = 0
+if !exists('g:airline_symbols')
+    let g:airline_symbols = {}
+endif
+
+" Requires vim-fugitive
+let g:airline_symbols.branch = '⎇ '
+:let g:airline_theme='base16color'
+
+"NERDTree customizations
+let NERDTreeWinSize=36
+let NERDTreeShowHidden=1
+let NERDTreeMapOpenInTab='<ENTER>'
+let NERDTreeNodeDelimiter = "\t"

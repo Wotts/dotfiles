@@ -1,0 +1,6 @@
+# VIM swap-files
+.*.swp
+
+# Pycache files
+__pycache__
+.*.pyc

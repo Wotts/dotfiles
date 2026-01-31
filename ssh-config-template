@@ -1,0 +1,11 @@
+Host *
+    ServerAliveInterval 300
+    ForwardAgent yes
+
+# GitHub Wotts
+Host 
+    Hostname github.com
+    User Wotts
+    PreferredAuthentications publickey
+    IdentitiesOnly yes
+    IdentityFile ~/.ssh/id_ed25519

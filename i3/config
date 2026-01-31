@@ -1,0 +1,255 @@
+# i3 config Wotts
+
+set $mod Mod4
+workspace_layout tabbed
+hide_edge_borders both
+
+
+# Font for window titles
+font pango:Consolas Regular 11
+
+# Use Mouse+$mod to drag floating windows to their wanted position
+floating_modifier $mod
+
+
+# kill focused window
+bindsym $mod+Shift+q kill
+
+# change focus
+bindsym $mod+Left focus left
+bindsym $mod+Down focus down
+bindsym $mod+Up focus up
+bindsym $mod+Right focus right
+
+# move focused window
+bindsym $mod+Shift+Left move left
+bindsym $mod+Shift+Down move down
+bindsym $mod+Shift+Up move up
+bindsym $mod+Shift+Right move right
+
+# cycle through active workspaces
+bindsym $mod+Shift+k workspace next
+bindsym $mod+Shift+j workspace prev
+
+# split in horizontal orientation
+bindsym $mod+h split h
+
+# split in vertical orientation
+#bindsym $mod+v split v
+
+# change container layout (stacked, tabbed, toggle split)
+bindsym $mod+s layout stacking
+bindsym $mod+w layout tabbed
+bindsym $mod+e layout toggle split
+bindsym $mod+v layout splitv
+
+# toggle tiling / floating
+bindsym $mod+Shift+space floating toggle
+
+# change focus between tiling / floating windows
+bindsym $mod+space focus mode_toggle
+
+# focus the parent container
+bindsym $mod+a focus parent
+
+# focus the child container
+#bindsym $mod+d focus child
+
+# Mute Slack
+bindsym --release $mod+m workspace $workspace6 exec --no-startup-id xdotool key m
+
+
+
+
+# Colour Palette srcery
+# Black     #1C1B19 #2D2B28
+# Red       #FF3128 #F75341
+# Green     #519F50 #98BC37
+# Yellow    #FBB829 #FED06E
+# Blue      #5573A3 #8EB2F7
+# Pink      #E02C6D #E35682
+# Cyan      #0AAEB3 #53FDE9
+# Grey      #918175 #FCE8C3
+
+set $bg-color 	         #2D2B28
+set $inactive-bg-color   #1C1B19
+set $text-color-white    #FCE8C3
+set $text-color-blue     #5573A3
+set $inactive-text-color #918175
+set $urgent-bg-color     #2D2B28
+set $urgent-text-color   #F75341
+
+# window colors
+#                       border              background         text                 indicator
+client.focused          $bg-color           $bg-color          $text-color-white    $bg-color
+client.unfocused        $inactive-bg-color  $inactive-bg-color $inactive-text-color $bg-color
+client.focused_inactive $inactive-bg-color  $inactive-bg-color $inactive-text-color $bg-color
+client.urgent           $urgent-bg-color    $urgent-bg-color   $urgent-text-color   $bg-color
+
+# Start i3bar to display a workspace bar with i3blocks
+bar {
+    separator_symbol ""
+    position top
+    status_command i3blocks -c ~/.config/i3/i3blocks.conf
+    colors {
+        background $inactive-bg-color
+        separator  $bg-color
+        #                  border             background         text
+        focused_workspace  $inactive-bg-color $inactive-bg-color $text-color-white
+        inactive_workspace $inactive-bg-color $inactive-bg-color $inactive-text-color
+        urgent_workspace   $inactive-bg-color $inactive-bg-color $urgent-text-color
+    }
+}
+
+
+
+
+
+# Workspaces
+set $workspace1 "1:  "
+set $workspace2 "2:  "
+set $workspace3 "3:  "
+set $workspace4 "4:  "
+set $workspace5 "5:  "
+set $workspace6 "6:  "
+set $workspace7 "7:  "
+set $workspace8 "8:  "
+set $workspace9 "9:  "
+set $workspace10 "10:  "
+
+# switch to workspace
+bindsym $mod+1 workspace $workspace1
+bindsym $mod+2 workspace $workspace2
+bindsym $mod+3 workspace $workspace3
+bindsym $mod+4 workspace $workspace4
+bindsym $mod+5 workspace $workspace5
+bindsym $mod+6 workspace $workspace6
+bindsym $mod+7 workspace $workspace7
+bindsym $mod+8 workspace $workspace8
+bindsym $mod+9 workspace $workspace9
+bindsym $mod+0 workspace $workspace10
+
+# move focused container to workspace
+bindsym $mod+Shift+1 move container to workspace $workspace1
+bindsym $mod+Shift+2 move container to workspace $workspace2
+bindsym $mod+Shift+3 move container to workspace $workspace3
+bindsym $mod+Shift+4 move container to workspace $workspace4
+bindsym $mod+Shift+5 move container to workspace $workspace5
+bindsym $mod+Shift+6 move container to workspace $workspace6
+bindsym $mod+Shift+7 move container to workspace $workspace7
+bindsym $mod+Shift+8 move container to workspace $workspace8
+bindsym $mod+Shift+9 move container to workspace $workspace9
+bindsym $mod+Shift+0 move container to workspace $workspace10
+
+
+#assign [class="Gnome-terminal"] $workspace1
+assign [class="Firefox"] $workspace2
+assign [class="Mattermost"] $workspace3
+assign [class="Slack"] $workspace3
+assign [class="Thunderbird"] $workspace4
+assign [class="Postman"] $workspace4
+assign [class="Nautilus"] $workspace5
+assign [class="Eog"] $workspace6
+assign [class="feh"] $workspace6
+assign [class="Gimp"] $workspace6
+assign [class="Steam"] $workspace7
+assign [class="libreoffice"] $workspace8
+#assign [class=""] $workspace8
+assign [class="Google-chrome"] $workspace9
+assign [class="vlc"] $workspace10
+assign [class="discord"] $workspace8
+for_window [class="Spotify"] move to workspace $workspace10
+
+
+
+
+
+# staring applications
+bindsym $mod+Return workspace $workspace1 exec --no-startup-id i3-sensible-terminal --password-store=gnome
+bindsym $mod+f exec --no-startup-id firefox
+bindsym $mod+c exec --no-startup-id google-chrome --password-store=gnome
+
+
+
+
+# reload the configuration file
+bindsym $mod+Shift+c reload
+# restart i3 inplace (preserves your layout/session, can be used to upgrade i3)
+bindsym $mod+Shift+r restart
+# exit i3 (logs you out of your X session)
+bindsym $mod+Shift+e exec --no-startup-id i3-msg exit
+# shutdown
+bindsym $mod+Shift+m exec --no-startup-id shutdown -h now
+
+
+# Lock i3
+bindsym $mod+Shift+x exec --no-startup-id betterlockscreen --lock
+
+
+# resize window (you can also use the mouse for that)
+mode "resize" {
+        # These bindings trigger as soon as you enter the resize mode
+
+        # same bindings, but for the arrow keys
+        bindsym Left resize shrink width 5 px or 5 ppt
+        bindsym Down resize grow height 5 px or 5 ppt
+        bindsym Up resize shrink height 5 px or 5 ppt
+        bindsym Right resize grow width 5 px or 5 ppt
+
+        # back to normal: Enter or Escape
+        bindsym Return mode "default"
+        bindsym Escape mode "default"
+}
+
+bindsym $mod+r mode "resize"
+
+
+
+
+
+# Touchpad scrolling
+exec_always --no-startup-id synclient NaturalScrolling=1 VertScrollDelta=-113
+
+# Switch monitors
+exec --no-startup-id "xrandr --output eDP-1 --off; xrandr --output DP-1-1 --auto; restart"
+bindsym $mod+g exec --no-startup-id "xrandr --output eDP-1 --off; xrandr --output DP-1-1 --auto; restart"
+bindsym $mod+Shift+g exec --no-startup-id "xrandr --output eDP-1 --auto; xrandr --output DP-1-1 --off; xrandr -s 1920x1080"
+bindsym $mod+Shift+h exec --no-startup-id "xrandr -s 1920x1080"
+
+# Media volume controls
+bindsym XF86AudioRaiseVolume exec --no-startup-id amixer -D pulse sset Master 2%+
+bindsym XF86AudioLowerVolume exec --no-startup-id amixer -D pulse sset Master 2%-
+bindsym XF86AudioMute exec --no-startup-id amixer -D pulse set Master 1+ toggle
+
+# Media player controls
+bindsym XF86AudioPlay exec --no-startup-id playerctl play
+bindsym XF86AudioNext exec --no-startup-id playerctl next
+bindsym XF86AudioPrev exec --no-startup-id playerctl previous
+bindsym XF86AudioStop exec --no-startup-id playerctl stop
+
+# Screenshots
+bindsym $mod+p exec --no-startup-id scrot -e 'mv $f ~/Pictures/'
+bindsym $mod+Shift+p exec --no-startup-id scrot -u -e 'mv $f ~/Pictures/'
+
+# Focus on click
+focus_follows_mouse no
+
+# Compton for opacity
+exec_always --no-startup-id compton -f -D 5
+
+# Launch Rofi
+bindsym $mod+d exec --no-startup-id ~/bin/rofi.sh
+
+# Default start-up applications
+exec --no-startup-id nm-applet
+
+# Gaps
+#smart_gaps on
+gaps inner 15
+gaps outer 5
+for_window [class="^.*"] border pixel 5
+
+# Wallpapers
+bindsym $mod+b exec --no-startup-id feh --bg-fill ~/Pictures/fVNa6RR.jpg
+exec_always --no-startup-id feh --bg-fill ~/Pictures/fVNa6RR.jpg
+#exec ~/bin/betterlockscreen.sh -u ~/Pictures/fVNa6RR.jpg
