@@ -105,10 +105,6 @@ alias egrep='egrep --color=auto'
 alias els='eza --long --all --all --header --modified --git --classify --sort=name'
 alias ezatree='eza --long --all --header --modified --git --classify --tree --sort=name'
 
-# wholesome aliases
-alias yeet="rm -rf"
-alias please='sudo $(fc -ln -1)'
-
 docker-remove-all() {
   docker system prune --volumes --force
   docker rm $(docker ps -a -q)

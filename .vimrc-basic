@@ -69,6 +69,7 @@ endif
 
 " Requires vim-fugitive
 let g:airline_symbols.branch = '⎇ '
+" Requires vim-airline-themes
 :let g:airline_theme='base16color'
 
 "NERDTree customizations
