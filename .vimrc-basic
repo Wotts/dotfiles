@@ -1,17 +1,17 @@
 " VIMrc Wotts
 
-"Colour
+" Colour
 syntax on
 colorscheme srcery
 hi MatchParen cterm=bold ctermfg=black ctermbg=white
-"Whitespace
+" Whitespace
 highlight ExtraWhitespace ctermbg=darkgrey
 match ExtraWhitespace /\s\s\+$/
 set cursorline
 :hi CursorLine ctermbg=236
 
 
-"Behaviour
+" Behaviour
 filetype plugin indent on
 set title
 set mouse=i
@@ -30,10 +30,10 @@ set showcmd
 set noshowmode "Airline does this for us
 
 
-"Keybindings
+" Keybindings
 noremap <C-d> 10<C-d>
 noremap <C-u> 10<C-u>
-"Remove all trailing whitespace by pressing F6
+" Remove all trailing whitespace by pressing F6
 nnoremap <F6> :let _s=@/<Bar>:%s/\s\+$//e<Bar>:let @/=_s<Bar><CR>
 nnoremap <F7> :%!python3 -m json.tool<CR>
 nnoremap <silent> <BS> :nohlsearch<CR>
@@ -42,12 +42,17 @@ nnoremap L gt
 vmap J !jq<CR>
 vmap S !sort<CR>
 set pastetoggle=<F8>
-"Ctrl-N for word, Ctrl-L for line-completion
+" Ctrl-N for word, Ctrl-L for line-completion
 inoremap <C-N> <C-X><C-N>
 inoremap <C-L> <C-X><C-L>
+:ca Q q
+:ca W w
+:ca WQ wq
+:ca wQ wq
+:ca Wq wq
 
-"Plugins
-"Pathogen for vim-airline and vim-gitgutter
+" Plugins
+" Pathogen for vim-airline and vim-gitgutter
 execute pathogen#infect()
 execute pathogen#helptags()
 
