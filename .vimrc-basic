@@ -7,16 +7,17 @@ hi MatchParen cterm=bold ctermfg=black ctermbg=white
 "Whitespace
 highlight ExtraWhitespace ctermbg=darkgrey
 match ExtraWhitespace /\s\s\+$/
+set cursorline
+:hi CursorLine ctermbg=236
 
 
 "Behaviour
 filetype plugin indent on
-set ls=2
 set title
 set mouse=i
 set scrolloff=5
-set softtabstop=4
-set shiftwidth=4
+set softtabstop=2
+set shiftwidth=2
 set expandtab
 set incsearch
 set hlsearch
@@ -24,18 +25,14 @@ set number
 "set relativenumber
 set ignorecase
 set smartcase
-noremap <C-d> 10<C-d>
-noremap <C-u> 10<C-u>
-set cursorline
-:hi CursorLine ctermbg=236
 set splitright
 set showcmd
-set wildmenu
-set wildmode=longest:full
 set noshowmode "Airline does this for us
 
 
 "Keybindings
+noremap <C-d> 10<C-d>
+noremap <C-u> 10<C-u>
 "Remove all trailing whitespace by pressing F6
 nnoremap <F6> :let _s=@/<Bar>:%s/\s\+$//e<Bar>:let @/=_s<Bar><CR>
 nnoremap <F7> :%!python3 -m json.tool<CR>
@@ -45,12 +42,9 @@ nnoremap L gt
 vmap J !jq<CR>
 vmap S !sort<CR>
 set pastetoggle=<F8>
-"Open and close NERDTree
-map <C-x> :NERDTreeToggle<CR>
 "Ctrl-N for word, Ctrl-L for line-completion
 inoremap <C-N> <C-X><C-N>
 inoremap <C-L> <C-X><C-L>
-
 
 "Plugins
 "Pathogen for vim-airline and vim-gitgutter
@@ -64,16 +58,13 @@ let g:airline#extensions#tabline#tabs_label = 'tabs'
 let g:airline#extensions#tabline#formatter = 'default'
 let g:airline#extensions#branch#format = 0
 if !exists('g:airline_symbols')
-    let g:airline_symbols = {}
+  let g:airline_symbols = {}
 endif
+
+let g:airline_symbols.dirty=' ! '
+let g:airline_symbols.notexists=' ? '
 
 " Requires vim-fugitive
 let g:airline_symbols.branch = '⎇ '
-" Requires vim-airline-themes
-:let g:airline_theme='base16color'
+:let g:airline_theme='srcery'
 
-"NERDTree customizations
-let NERDTreeWinSize=36
-let NERDTreeShowHidden=1
-let NERDTreeMapOpenInTab='<ENTER>'
-let NERDTreeNodeDelimiter = "\t"
