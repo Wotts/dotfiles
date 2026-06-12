@@ -53,10 +53,16 @@ execute pathogen#helptags()
 
 " Airline customizations
 let g:airline_powerline_fonts = 1
+let g:airline_skip_empty_sections = 1
 let g:airline#extensions#tabline#enabled = 1
 let g:airline#extensions#tabline#tabs_label = 'tabs'
 let g:airline#extensions#tabline#formatter = 'default'
+let g:airline#extensions#whitespace#trailing_format = '•••• [%s] '
 let g:airline#extensions#branch#format = 0
+let g:airline#extensions#default#section_truncate_width = {
+    \ 'warning': 120,
+    \ 'error': 120,
+    \ }
 if !exists('g:airline_symbols')
   let g:airline_symbols = {}
 endif
