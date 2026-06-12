@@ -1,6 +1,8 @@
 # ZSHrc Wotts
 
 export PATH="$HOME/.local/bin:$PATH"
+export VISUAL=vim
+export EDITOR="$VISUAL"
 
 # prompt
 autoload -Uz add-zsh-hook vcs_info
@@ -21,8 +23,14 @@ export LS_COLORS="di=36:ln=35:so=32:pi=33:ex=31:bd=34;46:cd=34;43:su=37;41:sg=30
 zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
 zstyle ':completion:*' menu select
 
-export PROMPT='%(?.%F{2}⏺.%F{1}⏺)%f %~ %F{2}⎇  ${vcs_info_msg_0_}%f %F{3}>%f '
-export RPROMPT='%F{8}⏱ %*%f'
+NEWLINE=$'\n'
+PWD=" %~ "
+STATUS=" %(?.%F{2}●.%F{1}●)%f "
+GITINFO=" ⎇  ${vcs_info_msg_0_} "
+TIME=" ⏱ %* "
+GAPLENGTH=$((COLUMNS-$#GITINFO-$#STATUS-$#TIME-3))
+export PROMPT="┏━${PWD}%F{2}${GITINFO}%f${(r:$GAPLENGTH::─:)}%F{8}${TIME}${STATUS}┓${NEWLINE}%F{3}┗━▶%f "
+export RPROMPT="┣━┛"
 
 # cli
 typeset -A ZSH_HIGHLIGHT_STYLES

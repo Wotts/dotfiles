@@ -10,13 +10,10 @@
 - [`btop`](https://github.com/aristocratos/btop) - the coolest recource monitor
 
 
-### Style
-- [`feh`](http://manpages.ubuntu.com/manpages/focal/man1/feh.1.html) - image viewer
-- [`gnome-tweak-tool`](https://linuxhint.com/gnome_tweak_installation_ubuntu/) - tweak gnome looks and functionality
-- [`lxappearance`](http://manpages.ubuntu.com/manpages/focal/man1/lxappearance.1.html) - theme switcher
-- [`change-gdm-background`](https://github.com/thiggy01/change-gdm-background) - change loginscreen background
-- [`papirus icon pack`](https://github.com/PapirusDevelopmentTeam/papirus-icon-theme) - a pretty icon pack
-- [`spicetify`](https://github.com/khanhas/spicetify-cli) - change Spotify looks
+### Visual
+- [`Lilex font`](https://github.com/mishamyrt/Lilex) - Developer font
+- [`Lilex Nerdfont`](https://www.nerdfonts.com/font-downloads) - Patched with nerd icons
+- [`gnome-tweak-tool`](https://itsfoss.com/gnome-tweak-tool/) - tweak gnome looks and functionality
 
 ### VIM
 - [`vim-pathogen`](https://github.com/tpope/vim-pathogen) - Vim package autoloader
