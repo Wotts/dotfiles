@@ -1,0 +1,27 @@
+# ghostty config Wotts
+
+# visual
+font-family = "Lilex"
+theme = Srcery
+
+# cursor
+cursor-style = underline
+shell-integration-features = no-cursor
+cursor-style-blink = true
+
+# top bar
+macos-icon = holographic
+# macos-titlebar-style = tabs
+macos-titlebar-proxy-icon = hidden
+notify-on-command-finish = never
+notify-on-command-finish-action = no-bell,no-notify
+bell-features = no-title,no-audio
+
+# terminal
+font-feature = -calt, -liga, -dlig
+
+# keybinds
+keybind = super+arrow_left=previous_tab
+keybind = super+arrow_right=next_tab
+keybind = ctrl+super+arrow_right=move_tab:1
+keybind = ctrl+super+arrow_left=move_tab:-1
