@@ -4,6 +4,10 @@ export PATH="$HOME/.local/bin:$PATH"
 export VISUAL=vim
 export EDITOR="$VISUAL"
 
+HISTFILE=~/.zsh_history
+HISTSIZE=10000
+SAVEHIST=10000
+setopt SHARE_HISTORY
 
 # prompt
 autoload -Uz add-zsh-hook vcs_info
@@ -17,6 +21,7 @@ zstyle ':vcs_info:*' formats $' %b%m'
 
 zstyle ':vcs_info:git*+set-message:*' hooks git-check
 
+# set git info
 +vi-git-check() {
   if [[ $(git rev-parse --is-inside-work-tree 2> /dev/null) == 'true' ]]; then
     UNPUSHED=$(git log --oneline @{u}.. 2> /dev/null | wc -l)
@@ -47,8 +52,23 @@ zstyle ':vcs_info:git*+set-message:*' hooks git-check
   fi
 }
 
+preexec() {
+  # set command execution time
+  # this function is not called on empty input
+  typeset -ig STARTTIME=SECONDS
+}
 
 precmd() {
+  PWD=${$(pwd)//\/home\/wotts/\~}
+
+  # git info
+  vcs_info
+  GITINFO=""
+  if [ -n "$vcs_info_msg_0_" ]; then
+    GITINFO=" ⎇ ${vcs_info_msg_0_}     "
+  fi
+
+  # command exit status
   EXITCODE=$?
   STATUS=󰋙
   STATUSCOLOR=green
@@ -59,26 +79,41 @@ precmd() {
     STATUSCODE="- $EXITCODE"
   fi
 
-  PWD=${$(pwd)//\/home\/wotts/\~}
-
-  vcs_info
-  GITINFO=""
-  if [ -n "$vcs_info_msg_0_" ]; then
-    GITINFO=" ⎇      ${vcs_info_msg_0_} "
-  fi
-
   TIME=$(date +%T)
-  GAPLENGTH=$((COLUMNS-$#PWD-$#GITINFO-$#TIME-$#STATUSCODE-44))
+
+  # calculate the fill-line width
+  GAPLENGTH=$(( COLUMNS-$#PWD-$#GITINFO-$#TIME-$#STATUSCODE-44 ))
 
   BGSTART="%F{236}░%F{236}▒%F{236}▓%K{236}%F{15}"
   BGEND="%k%F{236}▓%F{236}▒%F{236}░%f"
   SEPARATOR=" %F{244}%f "
-  print -P "\n┌─${BGSTART}   ${SEPARATOR} %B%F{4}  ${PWD}  ${SEPARATOR} %F{2}${GITINFO}%b ${BGEND}${(r:$GAPLENGTH::─:)}${BGSTART} %F{$STATUSCOLOR}${STATUS} ${STATUSCODE} ${SEPARATOR} ${TIME} ${BGEND} %f─┐"
+
+  # get command execution time
+  DURATION=0
+  DURATION=$(( SECONDS-STARTTIME ))
+  if (( STARTTIME > 0 )) && (( DURATION > 0 )); then
+    TIMEFG=15
+
+    if [ $DURATION -gt 20 ]; then
+      TIMEFG=3
+    fi
+
+    if [ $DURATION -gt 60 ]; then
+      TIMEFG=1
+    fi
+    EXECUTIONTIME="$BGSTART%F{${TIMEFG}}$(( $DURATION / 60 ))m $(( $DURATION % 60 ))s%f$BGEND"
+  else
+    EXECUTIONTIME=""
+  fi
+  # reset starttime on empty input
+  typeset -ig STARTTIME=-1
+
+  print -P "\n┌─${BGSTART} %B%F{6} %f ${SEPARATOR} %F{4}  ${PWD}  ${SEPARATOR} %F{2}${GITINFO}%b ${BGEND}${(r:$GAPLENGTH::─:)}${BGSTART} %F{$STATUSCOLOR}${STATUS} ${STATUSCODE} ${SEPARATOR} ${TIME} ${BGEND} %f─┐"
+  export RPROMPT="󰄽 ${EXECUTIONTIME} ╾┘"
 }
 
 ZLE_RPROMPT_INDENT=0
-export PROMPT="└─╼ %F{1}❱%F{2}❱%F{3}❱%F{4}❱%f "
-export RPROMPT="╾┘"
+export PROMPT="└─╼ %F{1}󰅂%F{2}󰅂%F{3}󰅂%F{4}󰅂%f "
 
 # requires coreutils
 alias ls="gls --color"
