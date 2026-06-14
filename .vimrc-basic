@@ -1,0 +1,85 @@
+" VIMrc Wotts
+
+" Colour
+syntax on
+colorscheme srcery
+hi MatchParen cterm=bold ctermfg=black ctermbg=white
+" Whitespace
+highlight ExtraWhitespace ctermbg=darkgrey
+match ExtraWhitespace /\s\s\+$/
+set cursorline
+:hi CursorLine ctermbg=236
+
+
+" Behaviour
+filetype plugin indent on
+set title
+set mouse=i
+set scrolloff=5
+set softtabstop=2
+set shiftwidth=2
+set expandtab
+set incsearch
+set hlsearch
+set number
+"set relativenumber
+set ignorecase
+set smartcase
+set splitright
+set showcmd
+set noshowmode "Airline does this for us
+
+
+" Keybindings
+" keep yank after put
+vnoremap p "_dP
+noremap <C-d> 10<C-d>
+noremap <C-u> 10<C-u>
+" remove all trailing whitespace by pressing F6
+nnoremap <F6> :let _s=@/<Bar>:%s/\s\+$//e<Bar>:let @/=_s<Bar><CR>
+nnoremap <F7> :%!python3 -m json.tool<CR>
+nnoremap <silent> <BS> :nohlsearch<CR>
+nnoremap H gT
+nnoremap L gt
+vmap J !jq<CR>
+vmap S !sort<CR>
+set pastetoggle=<F8>
+" ctrl-N for word-, ctrl-L for line-completion
+inoremap <C-N> <C-X><C-N>
+inoremap <C-L> <C-X><C-L>
+:ca Q q
+:ca W w
+:ca WQ wq
+:ca wQ wq
+:ca Wq wq
+:ca Wqa wqa
+:ca WQa wqa
+
+" Plugins
+" Pathogen for vim-airline and vim-gitgutter
+execute pathogen#infect()
+execute pathogen#helptags()
+
+" Airline customizations
+let g:airline_powerline_fonts = 1
+let g:airline_skip_empty_sections = 1
+let g:airline#extensions#tabline#enabled = 1
+let g:airline#extensions#tabline#tabs_label = 'tabs'
+let g:airline#extensions#tabline#formatter = 'default'
+let g:airline#extensions#whitespace#trailing_format = '•••• [%s] '
+let g:airline#extensions#branch#format = 0
+let g:airline#extensions#default#section_truncate_width = {
+    \ 'warning': 120,
+    \ 'error': 120,
+    \ }
+if !exists('g:airline_symbols')
+  let g:airline_symbols = {}
+endif
+
+let g:airline_symbols.dirty=' ! '
+let g:airline_symbols.notexists=' ? '
+
+" requires vim-fugitive
+let g:airline_symbols.branch = '⎇ '
+:let g:airline_theme='srcery'
+
