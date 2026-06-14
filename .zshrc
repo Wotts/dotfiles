@@ -13,44 +13,9 @@ setopt SHARE_HISTORY
 autoload -Uz add-zsh-hook vcs_info
 setopt prompt_subst
 
-# https://github.com/zsh-users/zsh/blob/master/Misc/vcs_info-examples
-# https://codeberg.org/Swindlers-Inc/dotfiles/src/branch/main/.zshrc
 zstyle ':vcs_info:*' enable git
-zstyle ':vcs_info:*' actionformats $' %b|%a%m'
-zstyle ':vcs_info:*' formats $' %b%m'
-
-zstyle ':vcs_info:git*+set-message:*' hooks git-check
-
-# set git info
-+vi-git-check() {
-  if [[ $(git rev-parse --is-inside-work-tree 2> /dev/null) == 'true' ]]; then
-    UNPUSHED=$(git log --oneline @{u}.. 2> /dev/null | wc -l)
-    if [[ -n $UNPUSHED ]] && [[ $UNPUSHED != '0' ]]; then
-      hook_com[misc]+=$(echo " $UNPUSHED")
-    fi
-    UNPULLED=$(git log --oneline ..@{u} 2> /dev/null | wc -l)
-    if [[ -n $UNPULLED ]] && [[ $UNPULLED != '0' ]]; then
-      hook_com[misc]+=$(echo " $UNPULLED")
-    fi
-
-    GIT_STATUS=$(git status --porcelain)
-    # Staged files
-    STAGED=$(echo $GIT_STATUS | grep -v '??' | grep -v "^ " | grep -v "^$" | wc -l)
-    if [[ -n $STAGED ]] && [[ $STAGED != '0' ]]; then
-      hook_com[misc]+=" +$STAGED"
-    fi
-    # Unstaged files
-    UNSTAGED=$(echo $GIT_STATUS | grep -v '??' | grep "^ " | wc -l)
-    if [[ -n $UNSTAGED ]] && [[ $UNSTAGED != '0' ]]; then
-      hook_com[misc]+=" !$UNSTAGED"
-    fi
-    # Untracked files
-    UNTRACKED=$(echo $GIT_STATUS | grep '??' | wc -l)
-    if [[ -n $UNTRACKED ]] && [[ $UNTRACKED != '0' ]]; then
-      hook_com[misc]+=" ?$UNTRACKED"
-    fi
-  fi
-}
+zstyle ':vcs_info:*' formats '%b'
+zstyle ':vcs_info:*' actionformats '%b(%a)'
 
 preexec() {
   # set command execution time
@@ -59,30 +24,54 @@ preexec() {
 }
 
 precmd() {
-  PWD=${$(pwd)//\/home\/wotts/\~}
+  PWD="  ${$(pwd)//\/home\/wotts/󰋜 \~}"
 
   # git info
-  vcs_info
-  GITINFO=""
-  if [ -n "$vcs_info_msg_0_" ]; then
-    GITINFO=" ⎇ ${vcs_info_msg_0_}     "
+  GIT_INFO=""
+  if [[ $(git rev-parse --is-inside-work-tree 2> /dev/null) == 'true' ]]; then
+    vcs_info
+    GIT_INFO="  ⎇  ${vcs_info_msg_0_}"
+
+    UNPUSHED=$(git log --oneline @{u}.. 2> /dev/null | wc -l)
+    UNPULLED=$(git log --oneline ..@{u} 2> /dev/null | wc -l)
+
+    if [[ $(($UNPUSHED)) > 0 || $(($UNPULLED)) > 0 ]]; then
+      GIT_INFO="${GIT_INFO}  "
+    fi
+
+    if [[ $(($UNPUSHED)) > 0 ]]; then
+      GIT_INFO="${GIT_INFO} ${UNPUSHED}"
+    fi
+
+    if [[ $(($UNPULLED)) > 0 ]]; then
+      GIT_INFO="${GIT_INFO} ${UNPULLED}"
+    fi
+
+    GIT_STATUS=$(git status --porcelain)
+    STAGED=$(echo $GIT_STATUS | grep -c '^??')
+    (( STAGED > 0 )) && GIT_INFO="${GIT_INFO} +${STAGED}"
+    UNSTAGED=$(echo $GIT_STATUS | grep -c '^\sM')
+    (( UNSTAGED > 0 )) && GIT_INFO="${GIT_INFO} !${UNSTAGED}"
+    UNTRACKED=$(echo $GIT_STATUS | grep -c '^A\s')
+    (( UNTRACKED > 0 )) && GIT_INFO="${GIT_INFO} ?${UNTRACKED}"
   fi
 
+
   # command exit status
-  EXITCODE=$?
-  STATUS=󰋙
-  STATUSCOLOR=green
-  STATUSCODE=''
-  if [ $EXITCODE -ne 0 ]; then
-    STATUS=󰫈
-    STATUSCOLOR=red
-    STATUSCODE="- $EXITCODE"
+  EXIT_CODE=$?
+  CMD_STATUS=󰋙
+  STATUS_COLOR=green
+  STATUS_CODE=''
+  if [ $EXIT_CODE -ne 0 ]; then
+    CMD_STATUS=󰫈
+    STATUS_COLOR=red
+    STATUS_CODE="- $EXIT_CODE"
   fi
 
   TIME=$(date +%T)
 
   # calculate the fill-line width
-  GAPLENGTH=$(( COLUMNS-$#PWD-$#GITINFO-$#TIME-$#STATUSCODE-44 ))
+  GAP_LENGTH=$(( COLUMNS-$#PWD-$#GIT_INFO-$#TIME-$#STATUS_CODE-37 ))
 
   BGSTART="%F{236}░%F{236}▒%F{236}▓%K{236}%F{15}"
   BGEND="%k%F{236}▓%F{236}▒%F{236}░%f"
@@ -93,27 +82,37 @@ precmd() {
   DURATION=$(( SECONDS-STARTTIME ))
   if (( STARTTIME > 0 )) && (( DURATION > 0 )); then
     TIMEFG=15
+    MIN=""
+    SEC=""
 
-    if [ $DURATION -gt 20 ]; then
+    if (( DURATION >= 20 )); then
       TIMEFG=3
-    fi
-
-    if [ $DURATION -gt 60 ]; then
+    elif (( DURATION >= 60 )); then
       TIMEFG=1
     fi
-    EXECUTIONTIME="$BGSTART%F{${TIMEFG}}$(( $DURATION / 60 ))m $(( $DURATION % 60 ))s%f$BGEND"
+
+    if (( DURATION / 60 )); then
+      MIN="$(( $DURATION / 60 ))m"
+    fi
+
+    if (( DURATION % 60 )); then
+      SEC="$(( $DURATION % 60 ))"
+      SEC="${SEC}s"
+    fi
+
+    EXECUTIONTIME="$BGSTART %F{${TIMEFG}}$MIN$SEC%f $BGEND"
   else
     EXECUTIONTIME=""
   fi
   # reset starttime on empty input
   typeset -ig STARTTIME=-1
 
-  print -P "\n┌─${BGSTART} %B%F{6} %f ${SEPARATOR} %F{4}  ${PWD}  ${SEPARATOR} %F{2}${GITINFO}%b ${BGEND}${(r:$GAPLENGTH::─:)}${BGSTART} %F{$STATUSCOLOR}${STATUS} ${STATUSCODE} ${SEPARATOR} ${TIME} ${BGEND} %f─┐"
-  export RPROMPT="󰄽 ${EXECUTIONTIME} ╾┘"
+  print -P "\n%F{242}╭─${BGSTART} %B%F{6} %f ${SEPARATOR} %F{4}${PWD} ${SEPARATOR}%F{2}${GIT_INFO}%b ${BGEND}%F{242}${(r:$GAP_LENGTH::·:)}${BGSTART} %F{$STATUS_COLOR}${CMD_STATUS} ${STATUS_CODE} ${SEPARATOR} ${TIME} ${BGEND}%F{242}─╮"
+  export RPROMPT="󰄽  ${EXECUTIONTIME}%F{242}╾╯"
 }
 
 ZLE_RPROMPT_INDENT=0
-export PROMPT="└─╼ %F{1}󰅂%F{2}󰅂%F{3}󰅂%F{4}󰅂%f "
+export PROMPT="%F{242}╰─╼ %F{1}󰅂%F{2}󰅂%F{3}󰅂%F{4}󰅂%f "
 
 # requires coreutils
 alias ls="gls --color"
@@ -135,20 +134,19 @@ bindkey '^[[F' end-of-line
 
 
 # aliases
-alias ssh='ghostty +ssh --'
-
-alias lb="cd ~/lb/stack-2.0"
-alias pest="~/lb/stack-2.0/backend/learnavel/vendor/bin/pest"
+alias ls="ls -l --color"
+#alias ssh='ghostty +ssh --'
 
 # wholesome aliases
 alias yeet="rm -rf"
 alias please='sudo $(fc -ln -1)'
 
 # eza aliases
-alias els='eza --long --all --all --header --modified --git --classify --sort=name'
-alias ezatree='eza --long --all --header --modified --git --classify --tree --sort=name'
+alias els='eza --long --all --header --modified --git --classify --icons --sort=name'
+alias ezatree='eza --long --all --header --modified --git --classify --icons --tree --sort=name'
 
 
 # plugins
 source ~/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh
 source ~/.zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+

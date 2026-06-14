@@ -31,9 +31,11 @@ set noshowmode "Airline does this for us
 
 
 " Keybindings
+" keep yank after put
+vnoremap p "_dP
 noremap <C-d> 10<C-d>
 noremap <C-u> 10<C-u>
-" Remove all trailing whitespace by pressing F6
+" remove all trailing whitespace by pressing F6
 nnoremap <F6> :let _s=@/<Bar>:%s/\s\+$//e<Bar>:let @/=_s<Bar><CR>
 nnoremap <F7> :%!python3 -m json.tool<CR>
 nnoremap <silent> <BS> :nohlsearch<CR>
@@ -42,7 +44,7 @@ nnoremap L gt
 vmap J !jq<CR>
 vmap S !sort<CR>
 set pastetoggle=<F8>
-" Ctrl-N for word, Ctrl-L for line-completion
+" ctrl-N for word-, ctrl-L for line-completion
 inoremap <C-N> <C-X><C-N>
 inoremap <C-L> <C-X><C-L>
 :ca Q q
@@ -50,6 +52,8 @@ inoremap <C-L> <C-X><C-L>
 :ca WQ wq
 :ca wQ wq
 :ca Wq wq
+:ca Wqa wqa
+:ca WQa wqa
 
 " Plugins
 " Pathogen for vim-airline and vim-gitgutter
@@ -75,7 +79,7 @@ endif
 let g:airline_symbols.dirty=' ! '
 let g:airline_symbols.notexists=' ? '
 
-" Requires vim-fugitive
+" requires vim-fugitive
 let g:airline_symbols.branch = '⎇ '
 :let g:airline_theme='srcery'
 
