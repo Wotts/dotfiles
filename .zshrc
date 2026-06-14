@@ -33,7 +33,9 @@ precmd() {
     GIT_INFO="  ⎇  ${vcs_info_msg_0_}"
 
     UNPUSHED=$(git log --oneline @{u}.. 2> /dev/null | wc -l)
+    UNPUSHED=$( echo ${UNPUSHED} | xargs) # trim mysterious whitespace
     UNPULLED=$(git log --oneline ..@{u} 2> /dev/null | wc -l)
+    UNPULLED=$( echo ${UNPULLED} | xargs)
 
     if [[ $(($UNPUSHED)) > 0 || $(($UNPULLED)) > 0 ]]; then
       GIT_INFO="${GIT_INFO}  "
